@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0810">
+<title>Hey Marta 🌹</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0810; --surface:#17101f; --card:#1e1528;
+  --border:rgba(220,130,200,0.13);
+  --rose:#e870b8; --rose2:#c94090; --gold:#f0c060;
+  --soft:#f5d0ee; --muted:rgba(245,208,238,0.45); --dim:rgba(245,208,238,0.22);
+  --text:#faeaf7; --green:#60e090;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden}
+
+/* BG */
+.bg-fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);animation:blobD 9s ease-in-out infinite alternate}
+.b1{width:500px;height:500px;background:rgba(232,112,184,0.09);top:-150px;left:-80px}
+.b2{width:380px;height:380px;background:rgba(201,64,144,0.06);bottom:-80px;right:-60px;animation-delay:3s}
+.b3{width:280px;height:280px;background:rgba(240,192,96,0.04);top:40%;left:35%;animation-delay:6s}
+@keyframes blobD{from{transform:translate(0,0) scale(1)}to{transform:translate(25px,18px) scale(1.1)}}
+.bg-fx::after{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4}
+
+/* LAYOUT */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:300px 1fr;grid-template-rows:60px 1fr 220px;height:100vh;max-width:1100px;margin:0 auto}
+
+/* TOP BAR */
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--border);background:rgba(13,8,16,.85);backdrop-filter:blur(14px);gap:6px}
+.brand{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;font-weight:600;background:linear-gradient(120deg,var(--rose),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.track-count{font-size:.73rem;color:var(--muted);letter-spacing:1px}
+.import-btn{position:relative;background:linear-gradient(135deg,var(--rose2),var(--rose));border:none;border-radius:20px;padding:10px 20px;color:#fff;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.import-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(232,112,184,.4)}
+.import-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.history-btn{background:rgba(232,112,184,.1);border:1px solid var(--border);border-radius:20px;padding:7px 14px;color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
+.history-btn:hover{background:rgba(232,112,184,.18);color:var(--soft)}
+
+/* SIDEBAR */
+.sidebar{grid-row:2;border-right:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;background:rgba(22,14,30,.6)}
+.sidebar-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-title{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:600;color:var(--soft);margin-bottom:10px}
+.search-box{width:100%;background:rgba(232,112,184,.07);border:1px solid var(--border);border-radius:10px;padding:7px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.8rem;outline:none;transition:border .2s}
+.search-box:focus{border-color:rgba(232,112,184,.4)}
+.search-box::placeholder{color:var(--dim)}
+.track-list{flex:1;overflow-y:auto;padding:6px 0}
+.track-list::-webkit-scrollbar{width:3px}
+.track-list::-webkit-scrollbar-thumb{background:rgba(232,112,184,.2);border-radius:2px}
+.track-item{display:flex;align-items:center;gap:10px;padding:8px 18px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
+.track-item:hover{background:rgba(232,112,184,.06)}
+.track-item.active{background:rgba(232,112,184,.1);border-left-color:var(--rose)}
+.track-num{width:22px;font-size:.68rem;color:var(--dim);text-align:right;flex-shrink:0}
+.track-item.active .track-num{color:var(--rose)}
+.track-thumb{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--rose2),#5a1040);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.track-meta{flex:1;min-width:0}
+.track-name{font-size:.81rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.track-item.active .track-name{color:var(--rose)}
+.track-sub{font-size:.67rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.track-dur{font-size:.67rem;color:var(--dim);flex-shrink:0}
+.track-del{background:none;border:none;color:var(--dim);font-size:.85rem;cursor:pointer;padding:4px 6px;border-radius:6px;transition:all .2s;flex-shrink:0;opacity:0;-webkit-tap-highlight-color:transparent}
+.track-item:hover .track-del,.track-item:active .track-del{opacity:1}
+.track-del:hover{color:#ff6060;background:rgba(255,80,80,.1)}
+.share-btn{background:rgba(240,192,96,.12);border:1px solid rgba(240,192,96,.25);border-radius:20px;padding:7px 14px;color:var(--gold);font-size:.78rem;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
+.share-btn:hover{background:rgba(240,192,96,.25)}
+.badge{font-size:.55rem;background:rgba(232,112,184,.18);color:var(--rose);padding:1px 5px;border-radius:4px;vertical-align:middle;margin-left:3px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--dim);font-size:.8rem;gap:8px;text-align:center;padding:20px;line-height:1.5}
+.empty-state .big{font-size:2.4rem}
+
+/* MAIN */
+.main{grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:22px;overflow:hidden;position:relative}
+
+/* Album art */
+.album-art{position:relative;width:190px;height:190px}
+.art-ring{position:absolute;border-radius:50%;border:1px solid rgba(232,112,184,.15);animation:ringR linear infinite}
+.art-ring:nth-child(1){inset:-14px;animation-duration:14s}
+.art-ring:nth-child(2){inset:-26px;animation-duration:20s;animation-direction:reverse;opacity:.45}
+@keyframes ringR{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.art-inner{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#3d1040,#1a0820);display:flex;align-items:center;justify-content:center;font-size:3.5rem;overflow:hidden;box-shadow:0 0 50px rgba(232,112,184,.18),inset 0 1px 0 rgba(255,255,255,.05)}
+.art-inner img{width:100%;height:100%;object-fit:cover}
+.art-inner.spinning{animation:artSpin 8s linear infinite}
+@keyframes artSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.art-inner::after{content:'';position:absolute;width:18px;height:18px;background:var(--bg);border-radius:50%;border:3px solid rgba(232,112,184,.3)}
+
+.song-display{text-align:center;max-width:340px}
+.song-main-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;color:var(--soft);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-main-artist{font-size:.83rem;color:var(--muted)}
+
+/* EQ */
+.eq{display:inline-flex;align-items:flex-end;gap:3px;height:16px;margin-left:8px;vertical-align:middle}
+.eq-b{width:3px;background:var(--rose);border-radius:2px;animation:eqP .5s ease-in-out infinite alternate}
+.eq-b:nth-child(1){height:7px;animation-delay:.0s}
+.eq-b:nth-child(2){height:14px;animation-delay:.1s}
+.eq-b:nth-child(3){height:10px;animation-delay:.2s}
+.eq-b:nth-child(4){height:16px;animation-delay:.05s}
+.eq-b:nth-child(5){height:9px;animation-delay:.15s}
+.eq-b:nth-child(6){height:13px;animation-delay:.25s}
+@keyframes eqP{from{transform:scaleY(.25);opacity:.5}to{transform:scaleY(1);opacity:1}}
+.eq.paused .eq-b{animation-play-state:paused;transform:scaleY(.2);opacity:.2}
+
+/* Voice log bubble */
+.voice-log{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(30,18,40,.92);border:1px solid rgba(232,112,184,.2);border-radius:16px;padding:8px 16px;font-size:.75rem;color:var(--soft);max-width:320px;text-align:center;opacity:0;transition:opacity .4s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(8px)}
+.voice-log.show{opacity:1}
+
+/* PLAYER BAR */
+.player-bar{grid-column:1/-1;background:rgba(17,10,25,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;flex-direction:column;padding:10px 20px 12px;gap:8px}
+.progress-row{display:flex;align-items:center;gap:12px}
+.time-label{font-size:.7rem;color:var(--dim);width:34px}
+.time-label.end{text-align:right}
+.progress-track{flex:1;height:4px;background:rgba(232,112,184,.12);border-radius:2px;cursor:pointer;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--rose2),var(--rose),var(--gold));border-radius:2px;width:0%;transition:width .4s linear;position:relative}
+.progress-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;background:var(--soft);border-radius:50%;opacity:0;transition:opacity .2s}
+.progress-track:hover .progress-fill::after{opacity:1}
+.controls-row{display:flex;align-items:center;justify-content:space-between}
+.ctrl-group{display:flex;align-items:center;gap:8px}
+.ctrl-btn{background:none;border:none;color:var(--muted);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:all .2s}
+.ctrl-btn:hover{color:var(--text);background:rgba(232,112,184,.08)}
+.ctrl-btn.active{color:var(--rose)}
+.play-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--rose2),var(--rose));border:none;color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(232,112,184,.45);transition:all .2s}
+.play-btn:hover{transform:scale(1.07);box-shadow:0 6px 32px rgba(232,112,184,.6)}
+.volume-group{display:flex;align-items:center;gap:8px;width:150px}
+.vol-icon{font-size:.85rem;color:var(--dim)}
+input[type=range].vol-slider{flex:1;height:3px;-webkit-appearance:none;background:rgba(232,112,184,.15);border-radius:2px;outline:none;cursor:pointer}
+input[type=range].vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--rose)}
+
+/* VOICE ORB */
+.voice-orb{position:fixed;right:26px;bottom:200px;z-index:50;display:flex;flex-direction:column;align-items:center;gap:7px}
+.orb-btn{width:58px;height:58px;border-radius:50%;border:none;background:linear-gradient(135deg,#3d1040,#7a1060);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all .3s;position:relative}
+.orb-btn::before,.orb-btn::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(232,112,184,.2);animation:orbR 2.2s ease-in-out infinite;opacity:0}
+.orb-btn::after{inset:-17px;animation-delay:.55s}
+@keyframes orbR{0%{transform:scale(.9);opacity:.5}100%{transform:scale(1.2);opacity:0}}
+.orb-btn:hover{transform:scale(1.07);box-shadow:0 0 30px rgba(232,112,184,.3)}
+.orb-btn.listening{background:linear-gradient(135deg,#c94090,#e870b8);animation:orbL .65s ease-in-out infinite alternate;box-shadow:0 0 40px rgba(232,112,184,.55)}
+@keyframes orbL{from{transform:scale(1)}to{transform:scale(1.13)}}
+.orb-btn.speaking{background:linear-gradient(135deg,#406090,#60a0e8);box-shadow:0 0 40px rgba(96,160,232,.5)}
+.orb-label{font-size:.62rem;color:var(--dim);text-align:center;letter-spacing:.4px;max-width:80px;line-height:1.4}
+.orb-label.hot{color:var(--rose);animation:blink .8s infinite}
+.orb-label.speaking{color:#60a0e8}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HISTORY PANEL */
+.panel-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:80;backdrop-filter:blur(4px)}
+.panel-overlay.show{display:flex;align-items:center;justify-content:center}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:20px;width:440px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--soft)}
+.panel-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;border-radius:8px;transition:color .2s}
+.panel-close:hover{color:var(--text)}
+.panel-body{overflow-y:auto;padding:12px 22px 18px;flex:1}
+.panel-body::-webkit-scrollbar{width:3px}
+.panel-body::-webkit-scrollbar-thumb{background:rgba(232,112,184,.2);border-radius:2px}
+.history-group{margin-bottom:18px}
+.history-date{font-size:.68rem;color:var(--rose);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.history-track{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(232,112,184,.05);cursor:pointer;transition:background .15s;border-radius:8px;padding:7px 10px}
+.history-track:hover{background:rgba(232,112,184,.06)}
+.history-track .ht-emoji{font-size:1.1rem;flex-shrink:0}
+.history-track .ht-info{flex:1;min-width:0}
+.history-track .ht-name{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-track .ht-time{font-size:.65rem;color:var(--dim);margin-top:1px}
+.no-history{color:var(--dim);font-size:.82rem;padding:20px 0;text-align:center}
+.clear-btn{background:rgba(232,112,184,.08);border:1px solid rgba(232,112,184,.15);border-radius:10px;padding:6px 14px;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:10px;font-family:'Outfit',sans-serif;transition:all .2s}
+.clear-btn:hover{background:rgba(232,112,184,.18);color:var(--rose)}
+
+/* TOAST */
+.toast{position:fixed;bottom:230px;left:50%;transform:translateX(-50%) translateY(40px);background:rgba(30,18,40,.95);border:1px solid rgba(232,112,184,.25);border-radius:30px;padding:8px 20px;font-size:.82rem;color:var(--soft);white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;opacity:0;z-index:100;backdrop-filter:blur(10px)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* HEARTS */
+.heart-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.heart{position:absolute;bottom:-40px;animation:heartFloat linear infinite;opacity:0}
+@keyframes heartFloat{0%{transform:translateY(0) rotate(0);opacity:0}8%{opacity:.7}90%{opacity:.2}100%{transform:translateY(-105vh) rotate(30deg);opacity:0}}
+
+@media(max-width:900px){
+  .app{grid-template-columns:1fr!important;grid-template-rows:56px 180px 1fr 220px!important}
+  .sidebar{grid-row:2!important;height:180px!important;border-right:none!important;border-bottom:1px solid var(--border)}
+  .main{grid-row:3!important;padding:14px!important;gap:10px!important}
+  .album-art{width:110px!important;height:110px!important}
+  .song-main-title{font-size:1.2rem!important}
+  .player-bar{grid-column:1!important;grid-row:4!important;padding:8px 14px 10px!important}
+  .voice-orb{right:10px!important;bottom:235px!important}
+  .pro-btns-row{gap:5px!important}
+  .pro-btn{padding:0 9px!important;height:28px!important;font-size:.7rem!important}
+  .topbar{padding:0 14px!important}
+  .brand{font-size:1.2rem!important}
+  .history-btn,.share-btn{padding:5px 10px!important;font-size:.7rem!important}
+  .import-btn{padding:6px 12px!important;font-size:.75rem!important}
+  .track-count{display:none}
+  .app{grid-template-columns:1fr;grid-template-rows:60px 200px 1fr 170px}
+  .sidebar{grid-row:2;height:200px;border-right:none;border-bottom:1px solid var(--border)}
+  .main{grid-row:3;padding:18px;gap:14px}
+  .album-art{width:130px;height:130px}
+  .player-bar{grid-column:1}
+  .voice-orb{right:14px;bottom:205px}
+}
+</style>
+</head>
+<body>
+<div class="bg-fx"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="heart-layer" id="heartLayer"></div>
+
+<div class="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">🌹 Hey Marta</div>
+    <div class="topbar-right">
+      <span class="track-count" id="trackCount">0 songs</span>
+      <button class="history-btn" onclick="openHistory()">🕐 History</button>
+      <button class="share-btn" onclick="shareApp()">🔗 Share</button>
+      <label class="import-btn">
+        📂 Load My Music
+        <input type="file" id="fileInput" multiple accept="audio/*,video/mp4,.mp4,.m4v,.m4a,.mp3,.wav,.flac,.ogg,.m4a,.aac,.opus,.wma">
+      </label>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">💝 Your Playlist</div>
+      <input class="search-box" id="searchBox" placeholder="🔍 Search songs or say a name..." oninput="filterTracks()">
+    </div>
+    <div class="track-list" id="trackList">
+      <div class="empty-state">
+        <span class="big">🎵</span>
+        <span>Tap <strong style="color:var(--rose)">📂 Import Music</strong> above<br><span style="font-size:.7rem;color:var(--dim)">Browse your phone storage for MP3, MP4, WAV and more</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="album-art">
+      <div class="art-ring"></div><div class="art-ring"></div>
+      <div class="art-inner" id="artInner">🎵</div>
+    </div>
+    <div class="song-display">
+      <div class="song-main-title" id="mainTitle">
+        Say "Hey Marta" 🌹
+        <span class="eq paused" id="mainEq"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>
+      </div>
+      <div class="song-main-artist" id="mainArtist">Your personal music player</div>
+    </div>
+    <div class="voice-log" id="voiceLog"></div>
+  </div>
+
+  <!-- PLAYER BAR -->
+  <div class="player-bar">
+    <div class="progress-row">
+      <span class="time-label" id="curTime">0:00</span>
+      <div class="progress-track" id="progressTrack" onclick="seek(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="time-label end" id="totTime">0:00</span>
+    </div>
+    <div class="pro-btns-row">
+      <button class="pro-btn" onclick="openEQ()" title="Equalizer">🎚 EQ</button>
+      <button class="pro-btn" onclick="openSleepTimer()" title="Sleep Timer" id="sleepBtn">😴 Sleep</button>
+      <button class="pro-btn" onclick="openMood()" title="Mood">🎭 Mood</button>
+      <button class="pro-btn" onclick="openLyrics()" title="Lyrics">📝 Lyrics</button>
+      <button class="pro-btn" onclick="openStats()" title="Stats">📊 Stats</button>
+    </div>
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">⇄</button>
+        <button class="ctrl-btn" onclick="prevTrack()" title="Previous">⏮</button>
+      </div>
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <div class="ctrl-group">
+        <button class="ctrl-btn" onclick="nextTrack()" title="Next">⏭</button>
+        <button class="ctrl-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repeat">↺</button>
+      </div>
+      <div class="volume-group">
+        <span class="vol-icon">🔈</span>
+        <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+        <span class="vol-icon">🔊</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOICE ORB -->
+<div class="voice-orb">
+  <button class="orb-btn" id="orbBtn" onclick="toggleListening()">🎤</button>
+  <div class="orb-label" id="orbLabel">Say "Hey Marta"</div>
+</div>
+
+<!-- HISTORY PANEL -->
+<div class="panel-overlay" id="historyOverlay" onclick="closeHistory(event)">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">🕐 Play History</div>
+      <button class="panel-close" onclick="closeHistoryPanel()">✕</button>
+    </div>
+    <div class="panel-body" id="historyBody"></div>
+  </div>
+</div>
+
+
+<!-- EQ PANEL -->
+<div class="panel-overlay" id="eqOverlay" onclick="closePanelOverlay(event,'eqOverlay')">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">🎚 Equalizer</div>
+      <button class="panel-close" onclick="closePanel('eqOverlay')">✕</button>
+    </div>
+    <div class="eq-panel">
+      <div class="eq-title">Adjust your sound</div>
+      <div class="eq-row"><span class="eq-label">Bass</span><input type="range" class="eq-slider" id="eqBass" min="-10" max="10" value="0" oninput="updateEQ()"><span class="eq-val" id="eqBassVal">0</span></div>
+      <div class="eq-row"><span class="eq-label">Mid</span><input type="range" class="eq-slider" id="eqMid" min="-10" max="10" value="0" oninput="updateEQ()"><span class="eq-val" id="eqMidVal">0</span></div>
+      <div class="eq-row"><span class="eq-label">Treble</span><input type="range" class="eq-slider" id="eqTreble" min="-10" max="10" value="0" oninput="updateEQ()"><span class="eq-val" id="eqTrebleVal">0</span></div>
+      <div class="eq-row"><span class="eq-label">Speed</span><input type="range" class="eq-slider" id="eqSpeed" min="50" max="150" value="100" oninput="updateEQ()"><span class="eq-val" id="eqSpeedVal">1x</span></div>
+      <div class="eq-presets">
+        <button class="preset-btn active" onclick="applyPreset('flat',this)">Flat</button>
+        <button class="preset-btn" onclick="applyPreset('bass',this)">Bass Boost</button>
+        <button class="preset-btn" onclick="applyPreset('vocal',this)">Vocal</button>
+        <button class="preset-btn" onclick="applyPreset('treble',this)">Treble</button>
+        <button class="preset-btn" onclick="applyPreset('pop',this)">Pop</button>
+        <button class="preset-btn" onclick="applyPreset('rock',this)">Rock</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLEEP TIMER PANEL -->
+<div class="panel-overlay" id="sleepOverlay" onclick="closePanelOverlay(event,'sleepOverlay')">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">😴 Sleep Timer</div>
+      <button class="panel-close" onclick="closePanel('sleepOverlay')">✕</button>
+    </div>
+    <div class="sleep-panel">
+      <div class="sleep-grid">
+        <button class="sleep-opt" onclick="setSleepTimer(5,this)">5 min</button>
+        <button class="sleep-opt" onclick="setSleepTimer(10,this)">10 min</button>
+        <button class="sleep-opt" onclick="setSleepTimer(15,this)">15 min</button>
+        <button class="sleep-opt" onclick="setSleepTimer(30,this)">30 min</button>
+        <button class="sleep-opt" onclick="setSleepTimer(45,this)">45 min</button>
+        <button class="sleep-opt" onclick="setSleepTimer(60,this)">1 hour</button>
+      </div>
+      <div class="sleep-status" id="sleepStatus">⏰ Timer active</div>
+      <button class="sleep-cancel" id="sleepCancel" onclick="cancelSleepTimer()">✕ Cancel Timer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOOD PANEL -->
+<div class="panel-overlay" id="moodOverlay" onclick="closePanelOverlay(event,'moodOverlay')">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">🎭 Mood Player</div>
+      <button class="panel-close" onclick="closePanel('moodOverlay')">✕</button>
+    </div>
+    <div class="mood-panel">
+      <div class="mood-grid">
+        <div class="mood-card happy" onclick="playByMood('happy',this)"><span class="mood-emoji">😊</span><div class="mood-name">Happy</div><div class="mood-desc">Upbeat & joyful</div></div>
+        <div class="mood-card chill" onclick="playByMood('chill',this)"><span class="mood-emoji">😌</span><div class="mood-name">Chill</div><div class="mood-desc">Relaxed vibes</div></div>
+        <div class="mood-card sad" onclick="playByMood('sad',this)"><span class="mood-emoji">😢</span><div class="mood-name">Sad</div><div class="mood-desc">Emotional feels</div></div>
+        <div class="mood-card hype" onclick="playByMood('hype',this)"><span class="mood-emoji">🔥</span><div class="mood-name">Hype</div><div class="mood-desc">High energy</div></div>
+        <div class="mood-card romantic" onclick="playByMood('romantic',this)"><span class="mood-emoji">🌹</span><div class="mood-name">Romantic</div><div class="mood-desc">Love & warmth</div></div>
+        <div class="mood-card focus" onclick="playByMood('focus',this)"><span class="mood-emoji">🎯</span><div class="mood-name">Focus</div><div class="mood-desc">Study & work</div></div>
+      </div>
+      <div class="mood-result" id="moodResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LYRICS PANEL -->
+<div class="panel-overlay" id="lyricsOverlay" onclick="closePanelOverlay(event,'lyricsOverlay')">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">📝 Lyrics</div>
+      <button class="panel-close" onclick="closePanel('lyricsOverlay')">✕</button>
+    </div>
+    <div class="lyrics-panel" id="lyricsBody">
+      <div class="lyrics-searching"><span class="spin">🎵</span><br>Play a song to see lyrics</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS PANEL -->
+<div class="panel-overlay" id="statsOverlay" onclick="closePanelOverlay(event,'statsOverlay')">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">📊 Your Stats</div>
+      <button class="panel-close" onclick="closePanel('statsOverlay')">✕</button>
+    </div>
+    <div class="stats-panel" id="statsBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="audioEl"></audio>
+
+<script>
+// =============================================
+// INDEXEDDB — persistent storage
+// =============================================
+let db;
+const DB_NAME = 'HeyMartaDB', DB_VER = 1;
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('tracks'))
+        d.createObjectStore('tracks', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('history'))
+        d.createObjectStore('history', { keyPath: 'id', autoIncrement: true });
+    };
+    req.onsuccess = e => { db = e.target.result; res(db); };
+    req.onerror = () => rej('DB error');
+  });
+}
+
+function dbPut(store, data) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(data);
+    req.onsuccess = () => res();
+    req.onerror = () => rej();
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej([]);
+  });
+}
+
+function dbDelete(store, key) {
+  return new Promise(res => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete = res;
+  });
+}
+
+function dbClear(store) {
+  return new Promise(res => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).clear();
+    tx.oncomplete = res;
+  });
+}
+
+// =============================================
+// STATE
+// =============================================
+let tracks = [];
+let filtered = [];
+let currentIdx = -1;
+let isPlaying = false;
+let isShuffle = false;
+let isRepeat = false;
+let isListening = false;
+let recognition = null;
+
+const audio = document.getElementById('audioEl');
+
+// =============================================
+// INIT
+// =============================================
+async function init() {
+  await openDB();
+  await loadTracksFromDB();
+}
+init();
+
+// =============================================
+// LOAD FROM DB
+// =============================================
+async function loadTracksFromDB() {
+  const saved = await dbGetAll('tracks');
+  if (!saved.length) return;
+  for (const t of saved) {
+    // Reconstruct blob URL from stored ArrayBuffer
+    const blob = new Blob([t.buffer], { type: t.mimeType });
+    const url = URL.createObjectURL(blob);
+    tracks.push({ ...t, url });
+  }
+  filtered = [...tracks];
+  renderList();
+  updateCount();
+  showToast(`🌹 Welcome back! ${tracks.length} songs loaded`);
+  speak(`Welcome back! I have ${tracks.length} songs ready for you.`);
+}
+
+// =============================================
+// FILE IMPORT
+// =============================================
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  showToast(`Loading ${files.length} song${files.length > 1 ? 's' : ''}... 🎵`);
+
+  let added = 0;
+  for (const file of files) {
+    const id = file.name + '_' + file.size;
+    // Skip duplicates
+    if (tracks.find(t => t.id === id)) continue;
+
+    const buffer = await file.arrayBuffer();
+    const blob = new Blob([buffer], { type: file.type });
+    const url = URL.createObjectURL(blob);
+
+    const ext = file.name.split('.').pop().toLowerCase();
+    const isVideo = ['mp4','m4v'].includes(ext);
+    const raw = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+    let title = raw, artist = 'Unknown';
+    if (raw.includes(' - ')) {
+      const p = raw.split(' - ');
+      artist = p[0].trim();
+      title  = p.slice(1).join(' - ').trim();
+    }
+
+    const duration = await getAudioDuration(url);
+    const addedAt = new Date().toISOString();
+
+    const track = { id, name: title, artist, duration, isVideo, ext: ext.toUpperCase(), mimeType: file.type, buffer, addedAt };
+    tracks.push({ ...track, url });
+
+    // Save to DB (without the object URL — just buffer)
+    await dbPut('tracks', track);
+    added++;
+  }
+
+  filtered = [...tracks];
+  renderList();
+  updateCount();
+  e.target.value = '';
+
+  if (added > 0) {
+    showToast(`✅ ${added} new song${added > 1 ? 's' : ''} saved!`);
+    speak(`${added} song${added > 1 ? 's' : ''} added to your playlist.`);
+    if (currentIdx === -1) loadTrack(0);
+  } else {
+    showToast('Those songs are already in your playlist!');
+  }
+});
+
+function getAudioDuration(url) {
+  return new Promise(res => {
+    const a = new Audio(url);
+    a.addEventListener('loadedmetadata', () => res(formatTime(a.duration)));
+    a.onerror = () => res('?:??');
+    setTimeout(() => res('?:??'), 3000);
+  });
+}
+
+// =============================================
+// RENDER
+// =============================================
+function renderList() {
+  const list = document.getElementById('trackList');
+  if (filtered.length === 0) {
+    list.innerHTML = tracks.length === 0
+      ? `<div class="empty-state"><span class="big">🎵</span><span>Tap <strong style="color:var(--rose)">📂 Import Music</strong> above<br><span style="font-size:.7rem;color:var(--dim)">Browse your phone storage for MP3, MP4, WAV and more</span></span></div>`
+      : `<div class="empty-state"><span class="big">🔍</span><span>No songs match</span></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map((t, i) => {
+    const realIdx = tracks.indexOf(t);
+    const active = realIdx === currentIdx;
+    return `
+    <div class="track-item ${active ? 'active' : ''}" onclick="selectTrack(${realIdx})">
+      <div class="track-num">${active && isPlaying ? '♪' : i+1}</div>
+      <div class="track-thumb">${t.isVideo ? '🎬' : '🎵'}</div>
+      <div class="track-meta">
+        <div class="track-name">${esc(t.name)}${t.isVideo ? '<span class="badge">MP4</span>' : ''}</div>
+        <div class="track-sub">${esc(t.artist)}</div>
+      </div>
+      <div class="track-dur">${t.duration}</div>
+      <button class="track-del" onclick="event.stopPropagation();removeTrack('${t.id}')" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function filterTracks() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  filtered = q ? tracks.filter(t => t.name.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q)) : [...tracks];
+  renderList();
+}
+
+async function removeTrack(id) {
+  const idx = tracks.findIndex(t => t.id === id);
+  if (idx === -1) return;
+  // If removing currently playing track
+  if (idx === currentIdx) {
+    pauseAudio();
+    currentIdx = -1;
+    document.getElementById('mainTitle').innerHTML = 'Say "Hey Marta" 🌹';
+    document.getElementById('mainArtist').textContent = 'Your personal music player';
+    document.getElementById('artInner').textContent = '🎵';
+  } else if (idx < currentIdx) {
+    currentIdx--;
+  }
+  // Remove from DB
+  await dbDelete('tracks', tracks[idx].id);
+  // Revoke blob URL to free memory
+  URL.revokeObjectURL(tracks[idx].url);
+  tracks.splice(idx, 1);
+  filtered = filtered.filter(t => t.id !== id);
+  renderList();
+  updateCount();
+  showToast('Song removed 🗑');
+}
+
+function shareApp() {
+  const shareData = {
+    title: '🌹 Hey Marta Music Player',
+    text: 'Check out Hey Marta - a voice activated music player! Say "Hey Marta play" to start your music!',
+    url: window.location.href
+  };
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    // Fallback: copy link to clipboard
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showToast('📋 App link copied! Share it with friends');
+    }).catch(() => {
+      showToast('Share: ' + window.location.href);
+    });
+  }
+}
+
+function updateCount() {
+  document.getElementById('trackCount').textContent = `${tracks.length} song${tracks.length !== 1 ? 's' : ''}`;
+}
+
+// =============================================
+// PLAYER
+// =============================================
+function selectTrack(idx) { loadTrack(idx); playAudio(); }
+
+function loadTrack(idx) {
+  if (idx < 0 || idx >= tracks.length) return;
+  currentIdx = idx;
+  const t = tracks[idx];
+  audio.src = t.url;
+  audio.load();
+  document.getElementById('mainTitle').innerHTML = `${esc(t.name)} <span class="eq ${isPlaying ? '' : 'paused'}" id="mainEq">${'<span class="eq-b"></span>'.repeat(6)}</span>`;
+  document.getElementById('mainArtist').textContent = t.artist;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('curTime').textContent = '0:00';
+  document.getElementById('totTime').textContent = t.duration;
+  renderList();
+}
+
+function togglePlay() {
+  if (!tracks.length) { speak('Please import some music first.'); return; }
+  if (currentIdx === -1) loadTrack(0);
+  isPlaying ? pauseAudio() : playAudio();
+}
+
+function playAudio() {
+  if (!tracks.length) return;
+  if (currentIdx === -1) loadTrack(0);
+  audio.play().then(() => {
+    isPlaying = true;
+    document.getElementById('playBtn').textContent = '⏸';
+    document.getElementById('artInner').classList.add('spinning');
+    document.getElementById('mainEq')?.classList.remove('paused');
+    renderList();
+    logHistory(tracks[currentIdx]);
+    spawnHearts();
+  }).catch(() => {});
+}
+
+function pauseAudio() {
+  audio.pause();
+  isPlaying = false;
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('artInner').classList.remove('spinning');
+  document.getElementById('mainEq')?.classList.add('paused');
+  renderList();
+}
+
+function prevTrack() {
+  if (!tracks.length) return;
+  if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+  const idx = (currentIdx - 1 + tracks.length) % tracks.length;
+  loadTrack(idx); if (isPlaying) playAudio();
+}
+
+function nextTrack() {
+  if (!tracks.length) return;
+  const idx = isShuffle ? Math.floor(Math.random() * tracks.length) : (currentIdx + 1) % tracks.length;
+  loadTrack(idx); if (isPlaying) playAudio();
+}
+
+function toggleShuffle() {
+  isShuffle = !isShuffle;
+  document.getElementById('shuffleBtn').classList.toggle('active', isShuffle);
+  speak(isShuffle ? 'Shuffle is on.' : 'Shuffle is off.');
+}
+
+function toggleRepeat() {
+  isRepeat = !isRepeat;
+  audio.loop = isRepeat;
+  document.getElementById('repeatBtn').classList.toggle('active', isRepeat);
+  speak(isRepeat ? 'Repeat is on.' : 'Repeat is off.');
+}
+
+function setVolume(v) { audio.volume = v / 100; }
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('curTime').textContent = formatTime(audio.currentTime);
+});
+
+audio.addEventListener('ended', () => { if (!isRepeat) nextTrack(); });
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('totTime').textContent = formatTime(audio.duration);
+});
+
+function seek(e) {
+  if (!audio.duration) return;
+  const pct = e.offsetX / document.getElementById('progressTrack').offsetWidth;
+  audio.currentTime = pct * audio.duration;
+}
+
+// =============================================
+// HISTORY
+// =============================================
+async function logHistory(track) {
+  if (!track) return;
+  await dbPut('history', {
+    id: Date.now(),
+    trackId: track.id,
+    name: track.name,
+    artist: track.artist,
+    isVideo: track.isVideo,
+    playedAt: new Date().toISOString()
+  });
+}
+
+async function openHistory() {
+  const items = await dbGetAll('history');
+  const body = document.getElementById('historyBody');
+
+  if (!items.length) {
+    body.innerHTML = `<div class="no-history">No play history yet 🎵<br>Start playing music!</div>`;
+    document.getElementById('historyOverlay').classList.add('show');
+    return;
+  }
+
+  // Group by date
+  const groups = {};
+  items.reverse().forEach(item => {
+    const d = new Date(item.playedAt);
+    const key = d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(item);
+  });
+
+  body.innerHTML = Object.entries(groups).map(([date, songs]) => `
+    <div class="history-group">
+      <div class="history-date">${date}</div>
+      ${songs.map(s => `
+        <div class="history-track" onclick="playByName('${esc(s.name)}')">
+          <div class="ht-emoji">${s.isVideo ? '🎬' : '🎵'}</div>
+          <div class="ht-info">
+            <div class="ht-name">${esc(s.name)}</div>
+            <div class="ht-time">${esc(s.artist)} · ${new Date(s.playedAt).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('') +
+    `<button class="clear-btn" onclick="clearHistory()">🗑 Clear history</button>`;
+
+  document.getElementById('historyOverlay').classList.add('show');
+}
+
+function closeHistory(e) {
+  if (e.target === document.getElementById('historyOverlay')) closeHistoryPanel();
+}
+function closeHistoryPanel() {
+  document.getElementById('historyOverlay').classList.remove('show');
+}
+
+async function clearHistory() {
+  await dbClear('history');
+  closeHistoryPanel();
+  showToast('History cleared 🗑');
+}
+
+// =============================================
+// PLAY BY NAME (voice or history click)
+// =============================================
+function playByName(name) {
+  closeHistoryPanel();
+  const q = name.toLowerCase();
+  const idx = tracks.findIndex(t => t.name.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q));
+  if (idx >= 0) {
+    loadTrack(idx);
+    playAudio();
+    speak(`Playing ${tracks[idx].name} by ${tracks[idx].artist}.`);
+    showVoiceLog(`🎵 Playing "${tracks[idx].name}"`);
+  } else {
+    speak(`Sorry, I couldn't find a song called ${name}.`);
+    showVoiceLog(`❌ Song not found: "${name}"`);
+  }
+}
+
+// =============================================
+// VOICE RECOGNITION
+// =============================================
+function toggleListening() {
+  if (isListening) stopListening();
+  else startListening();
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast("Voice not supported in this browser 😢"); return; }
+
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('orbBtn').classList.add('listening');
+    document.getElementById('orbBtn').textContent = '👂';
+    setOrbLabel('Listening...', true);
+  };
+
+  recognition.onresult = (e) => {
+    let text = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      text += e.results[i][0].transcript.toLowerCase();
+    }
+    showVoiceLog(`👂 "${text.trim()}"`);
+    handleVoiceCommand(text.trim());
+  };
+
+  recognition.onerror = (e) => { if (e.error !== 'no-speech') stopListening(); };
+  recognition.onend = () => { if (isListening) recognition.start(); };
+  recognition.start();
+}
+
+function stopListening() {
+  isListening = false;
+  if (recognition) { recognition.stop(); recognition = null; }
+  document.getElementById('orbBtn').classList.remove('listening');
+  document.getElementById('orbBtn').textContent = '🎤';
+  setOrbLabel('Say "Hey Marta"', false);
+}
+
+// =============================================
+// VOICE COMMAND HANDLER
+// STRICT: Every command MUST start with "Hey Marta"
+// =============================================
+
+let awaitingCommand = false;  // true after "Hey Marta" is detected, waiting for the command
+let wakeTimer = null;         // timeout to reset if no command follows
+
+function handleVoiceCommand(text) {
+  // Only process final results (avoid acting on partial/interim speech)
+  // We look for "hey marta" as the strict trigger
+  const hasWake = text.includes('hey marta') || text.includes('hey martha');
+
+  // ── STEP 1: Detect wake word ──
+  if (hasWake) {
+    // Extract everything AFTER "hey marta" as the inline command
+    const afterWake = text.replace(/.*hey mart[ah]a?\s*/i, '').trim();
+
+    if (afterWake.length > 0) {
+      // Wake + command in one phrase e.g. "Hey Marta play"
+      dispatchCommand(afterWake, text);
+    } else {
+      // Just "Hey Marta" — wait for next phrase as the command
+      awaitingCommand = true;
+      clearTimeout(wakeTimer);
+      speak("Yes?");
+      showVoiceLog('🌹 Hey! What would you like?');
+      setOrbLabel('Say your<br>command...', true);
+      // Reset after 6 seconds if no command comes
+      wakeTimer = setTimeout(() => {
+        awaitingCommand = false;
+        setOrbLabel('Listening...', true);
+        showVoiceLog('');
+      }, 6000);
+    }
+    return;
+  }
+
+  // ── STEP 2: If we heard "Hey Marta" before, treat next speech as the command ──
+  if (awaitingCommand && text.length > 1) {
+    awaitingCommand = false;
+    clearTimeout(wakeTimer);
+    dispatchCommand(text, text);
+    return;
+  }
+
+  // ── No wake word, not awaiting — ignore completely ──
+}
+
+function dispatchCommand(cmd, fullText) {
+  // Normalise
+  cmd = cmd.toLowerCase().trim();
+
+  // ── PLAY (start music) ──
+  if (/^play$/.test(cmd) || cmd === 'play music' || cmd === 'start' || cmd === 'start music') {
+    if (!tracks.length) { speak("Please import some music first."); return; }
+    if (!isPlaying) { if (currentIdx === -1) loadTrack(0); playAudio(); }
+    speak("Playing your music!");
+    showVoiceLog('▶ Playing music');
+    spawnHearts();
+    return;
+  }
+
+  // ── PAUSE / STOP ──
+  if (/^(pause|stop)/.test(cmd)) {
+    pauseAudio();
+    speak("Music paused.");
+    showVoiceLog('⏸ Paused');
+    return;
+  }
+
+  // ── NEXT SONG ──
+  if (/^(next|next song|skip|change|different|another)/.test(cmd)) {
+    nextTrack();
+    speak(`Next song: ${tracks[currentIdx]?.name || 'playing'}.`);
+    showVoiceLog(`⏭ Next: "${tracks[currentIdx]?.name}"`);
+    spawnHearts();
+    return;
+  }
+
+  // ── PREVIOUS SONG ──
+  if (/^(previous|prev|back|last song|go back)/.test(cmd)) {
+    prevTrack();
+    speak(`Going back to ${tracks[currentIdx]?.name || 'previous song'}.`);
+    showVoiceLog(`⏮ Previous: "${tracks[currentIdx]?.name}"`);
+    return;
+  }
+
+  // ── PLAY SONG BY NAME: "play [song name]" ──
+  const playNameMatch = cmd.match(/^play\s+(.+)/);
+  if (playNameMatch) {
+    const months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+    const query = playNameMatch[1].replace(/^(the song|song)\s+/i,'').trim();
+    const foundMonth = months.find(m => query.includes(m));
+    if (foundMonth) {
+      playByDate(foundMonth, query);
+    } else {
+      playByName(query);
+    }
+    return;
+  }
+
+  // ── SHUFFLE ──
+  if (/^shuffle/.test(cmd)) {
+    toggleShuffle();
+    return;
+  }
+
+  // ── REPEAT ──
+  if (/^repeat/.test(cmd)) {
+    toggleRepeat();
+    return;
+  }
+
+  // ── VOLUME UP ──
+  if (/^(louder|volume up|turn up)/.test(cmd)) {
+    const v = Math.min(100, parseInt(document.getElementById('volSlider').value) + 20);
+    document.getElementById('volSlider').value = v; setVolume(v);
+    speak("Volume up!"); showVoiceLog('🔊 Volume up');
+    return;
+  }
+
+  // ── VOLUME DOWN ──
+  if (/^(quieter|volume down|turn down|lower)/.test(cmd)) {
+    const v = Math.max(0, parseInt(document.getElementById('volSlider').value) - 20);
+    document.getElementById('volSlider').value = v; setVolume(v);
+    speak("Volume down!"); showVoiceLog('🔉 Volume down');
+    return;
+  }
+
+  // ── HOW MANY SONGS ──
+  if (/^(how many|count)/.test(cmd)) {
+    speak(`You have ${tracks.length} song${tracks.length !== 1 ? 's' : ''} in your playlist.`);
+    showVoiceLog(`📊 ${tracks.length} songs`);
+    return;
+  }
+
+  // ── WHAT'S PLAYING ──
+  if (/^(what('s| is)?\s*(playing|this|song)|current song)/.test(cmd)) {
+    if (currentIdx >= 0) {
+      const t = tracks[currentIdx];
+      speak(`Currently playing ${t.name} by ${t.artist}.`);
+      showVoiceLog(`🎵 "${t.name}"`);
+    } else {
+      speak("Nothing is playing right now.");
+    }
+    return;
+  }
+
+  // ── UNKNOWN COMMAND ──
+  speak(`Sorry, I didn't understand "${cmd}". Try saying Hey Marta play, pause, next, or a song name.`);
+  showVoiceLog(`❓ Unknown: "${cmd}"`);
+}
+
+// =============================================
+// PLAY BY DATE
+// =============================================
+async function playByDate(month, fullText) {
+  const history = await dbGetAll('history');
+  const monthIdx = ['january','february','march','april','may','june','july','august','september','october','november','december'].indexOf(month);
+
+  // Find day number if mentioned
+  const dayMatch = fullText.match(/\b(\d{1,2})\b/);
+  const day = dayMatch ? parseInt(dayMatch[1]) : null;
+
+  const matches = history.filter(h => {
+    const d = new Date(h.playedAt);
+    const monthOk = d.getMonth() === monthIdx;
+    const dayOk = day ? d.getDate() === day : true;
+    return monthOk && dayOk;
+  });
+
+  if (!matches.length) {
+    speak(`I couldn't find any songs played in ${month}${day ? ' ' + day : ''}.`);
+    showVoiceLog(`❌ No history for ${month}${day ? ' ' + day : ''}`);
+    return;
+  }
+
+  // Play the most recently played from that date
+  const latest = matches[matches.length - 1];
+  playByName(latest.name);
+  speak(`Playing ${latest.name}, which you listened to in ${month}.`);
+}
+
+// =============================================
+// TEXT-TO-SPEECH (Marta's Voice)
+// =============================================
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1.0;
+  utter.pitch = 1.1;
+  utter.volume = 0.9;
+
+  // Try to pick a female voice
+  const voices = window.speechSynthesis.getVoices();
+  const femaleVoice = voices.find(v =>
+    v.name.toLowerCase().includes('female') ||
+    v.name.includes('Samantha') ||
+    v.name.includes('Victoria') ||
+    v.name.includes('Karen') ||
+    v.name.includes('Moira') ||
+    v.name.includes('Tessa') ||
+    v.name.includes('Fiona') ||
+    v.name.includes('Google UK English Female') ||
+    v.name.includes('Microsoft Zira') ||
+    v.name.includes('Microsoft Emma')
+  );
+  if (femaleVoice) utter.voice = femaleVoice;
+
+  // Visual: show speaking state on orb
+  utter.onstart = () => {
+    document.getElementById('orbBtn').classList.add('speaking');
+    document.getElementById('orbBtn').textContent = '💬';
+    setOrbLabel('Speaking...', false, true);
+  };
+  utter.onend = () => {
+    document.getElementById('orbBtn').classList.remove('speaking');
+    document.getElementById('orbBtn').textContent = isListening ? '👂' : '🎤';
+    setOrbLabel(isListening ? 'Listening...' : 'Say "Hey Marta"', isListening, false);
+  };
+
+  window.speechSynthesis.speak(utter);
+}
+
+// Preload voices
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+// =============================================
+// VOICE LOG BUBBLE
+// =============================================
+let logTimer;
+function showVoiceLog(msg) {
+  const el = document.getElementById('voiceLog');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(logTimer);
+  logTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// =============================================
+// HELPERS
+// =============================================
+function setOrbLabel(html, hot, speaking) {
+  const el = document.getElementById('orbLabel');
+  el.innerHTML = html;
+  el.className = 'orb-label' + (speaking ? ' speaking' : hot ? ' hot' : '');
+}
+
+function formatTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  return `${Math.floor(s/60)}:${(Math.floor(s%60)).toString().padStart(2,'0')}`;
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function spawnHearts() {
+  const layer = document.getElementById('heartLayer');
+  ['❤️','🌹','✨','💕','🎵','💫','🌸'].forEach((sym, i) => {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = sym;
+    h.style.cssText = `left:${10+Math.random()*80}%;font-size:${.8+Math.random()*.8}rem;animation-duration:${4+Math.random()*5}s;animation-delay:${Math.random()*1.5}s`;
+    layer.appendChild(h);
+    setTimeout(() => h.remove(), 9000);
+  });
+}
+
+
+// =============================================
+// 1. EQUALIZER (Web Audio API)
+// =============================================
+let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null;
+
+function initAudioContext() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    sourceNode = audioCtx.createMediaElementSource(audio);
+    bassFilter = audioCtx.createBiquadFilter();
+    bassFilter.type = 'lowshelf';
+    bassFilter.frequency.value = 200;
+    midFilter = audioCtx.createBiquadFilter();
+    midFilter.type = 'peaking';
+    midFilter.frequency.value = 1000;
+    trebleFilter = audioCtx.createBiquadFilter();
+    trebleFilter.type = 'highshelf';
+    trebleFilter.frequency.value = 4000;
+    sourceNode.connect(bassFilter);
+    bassFilter.connect(midFilter);
+    midFilter.connect(trebleFilter);
+    trebleFilter.connect(audioCtx.destination);
+  } catch(e) { console.log('AudioContext not supported'); }
+}
+
+function updateEQ() {
+  initAudioContext();
+  const bass = parseInt(document.getElementById('eqBass').value);
+  const mid  = parseInt(document.getElementById('eqMid').value);
+  const treble = parseInt(document.getElementById('eqTreble').value);
+  const speed = parseInt(document.getElementById('eqSpeed').value) / 100;
+  document.getElementById('eqBassVal').textContent = (bass >= 0 ? '+' : '') + bass;
+  document.getElementById('eqMidVal').textContent  = (mid  >= 0 ? '+' : '') + mid;
+  document.getElementById('eqTrebleVal').textContent = (treble >= 0 ? '+' : '') + treble;
+  document.getElementById('eqSpeedVal').textContent = speed.toFixed(1) + 'x';
+  if (bassFilter) bassFilter.gain.value = bass;
+  if (midFilter)  midFilter.gain.value  = mid;
+  if (trebleFilter) trebleFilter.gain.value = treble;
+  audio.playbackRate = speed;
+}
+
+const EQ_PRESETS = {
+  flat:   [0,0,0,100],
+  bass:   [8,-2,-2,100],
+  vocal:  [-2,6,3,100],
+  treble: [-2,0,8,100],
+  pop:    [3,5,3,100],
+  rock:   [6,2,5,100]
+};
+
+function applyPreset(name, btn) {
+  const p = EQ_PRESETS[name];
+  document.getElementById('eqBass').value   = p[0];
+  document.getElementById('eqMid').value    = p[1];
+  document.getElementById('eqTreble').value = p[2];
+  document.getElementById('eqSpeed').value  = p[3];
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateEQ();
+  showToast('🎚 ' + btn.textContent + ' preset applied!');
+}
+
+function openEQ() { document.getElementById('eqOverlay').classList.add('show'); }
+
+// =============================================
+// 2. SLEEP TIMER
+// =============================================
+let sleepTimer = null, sleepEnd = null, sleepInterval = null;
+
+function setSleepTimer(mins, btn) {
+  if (sleepTimer) clearTimeout(sleepTimer);
+  if (sleepInterval) clearInterval(sleepInterval);
+  sleepEnd = Date.now() + mins * 60000;
+  document.querySelectorAll('.sleep-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sleepStatus').classList.add('show');
+  document.getElementById('sleepCancel').classList.add('show');
+  document.getElementById('sleepBtn').classList.add('timer-on');
+  updateSleepStatus();
+  sleepInterval = setInterval(updateSleepStatus, 10000);
+  sleepTimer = setTimeout(() => {
+    pauseAudio();
+    clearInterval(sleepInterval);
+    document.getElementById('sleepBtn').classList.remove('timer-on');
+    document.getElementById('sleepStatus').classList.remove('show');
+    document.getElementById('sleepCancel').classList.remove('show');
+    speak('Sleep timer finished. Goodnight!');
+    showToast('😴 Sleep timer ended. Goodnight!');
+  }, mins * 60000);
+  showToast('😴 Sleep timer set for ' + mins + ' minutes');
+  speak('Sleep timer set for ' + mins + ' minutes. Goodnight!');
+}
+
+function updateSleepStatus() {
+  if (!sleepEnd) return;
+  const rem = Math.max(0, Math.ceil((sleepEnd - Date.now()) / 60000));
+  document.getElementById('sleepStatus').textContent = '⏰ Stops in ' + rem + ' minute' + (rem !== 1 ? 's' : '');
+}
+
+function cancelSleepTimer() {
+  if (sleepTimer) clearTimeout(sleepTimer);
+  if (sleepInterval) clearInterval(sleepInterval);
+  sleepTimer = null; sleepEnd = null;
+  document.getElementById('sleepBtn').classList.remove('timer-on');
+  document.getElementById('sleepStatus').classList.remove('show');
+  document.getElementById('sleepCancel').classList.remove('show');
+  document.querySelectorAll('.sleep-opt').forEach(b => b.classList.remove('active'));
+  showToast('Sleep timer cancelled');
+}
+
+function openSleepTimer() { document.getElementById('sleepOverlay').classList.add('show'); }
+
+// =============================================
+// 3. MOOD DETECTOR (AI picks songs by mood keywords)
+// =============================================
+const MOOD_KEYWORDS = {
+  happy:    ['happy','joy','fun','good','party','dance','smile','sunshine','love','perfect','beautiful','wonderful','celebrate','yeah'],
+  chill:    ['chill','relax','calm','slow','easy','peace','quiet','smooth','soft','gentle','float','dream','night'],
+  sad:      ['sad','cry','tears','pain','hurt','lost','alone','miss','gone','broken','blues','rain','sorry','goodbye'],
+  hype:     ['fire','hype','power','energy','run','beast','loud','bass','bang','wild','crazy','pump','go','fast','strong'],
+  romantic: ['love','heart','kiss','rose','baby','darling','forever','soul','together','honey','sweet','romance','marta'],
+  focus:    ['focus','study','work','flow','deep','mind','clear','concentrate','think','instrumental','ambient']
+};
+
+function playByMood(mood, card) {
+  document.querySelectorAll('.mood-card').forEach(c => c.style.opacity='0.5');
+  card.style.opacity='1';
+  const keywords = MOOD_KEYWORDS[mood];
+  const matches = tracks.filter(t => {
+    const text = (t.name + ' ' + t.artist).toLowerCase();
+    return keywords.some(k => text.includes(k));
+  });
+  const result = document.getElementById('moodResult');
+  result.classList.add('show');
+  if (matches.length > 0) {
+    const pick = matches[Math.floor(Math.random() * matches.length)];
+    const idx = tracks.indexOf(pick);
+    loadTrack(idx); playAudio();
+    result.textContent = '🎵 Playing "' + pick.name + '" for your ' + mood + ' mood!';
+    speak('Playing ' + pick.name + ' for your ' + mood + ' mood!');
+    spawnHearts();
+    setTimeout(() => closePanel('moodOverlay'), 2000);
+  } else {
+    // No keyword match — pick random and shuffle
+    isShuffle = true;
+    document.getElementById('shuffleBtn').classList.add('active');
+    const idx = Math.floor(Math.random() * tracks.length);
+    loadTrack(idx); playAudio();
+    result.textContent = '🔀 No ' + mood + ' songs found by name — shuffling your playlist!';
+    speak('Starting shuffle mode for your ' + mood + ' mood!');
+    setTimeout(() => {
+      closePanel('moodOverlay');
+      document.querySelectorAll('.mood-card').forEach(c => c.style.opacity='1');
+    }, 2000);
+  }
+}
+
+function openMood() {
+  document.getElementById('moodResult').classList.remove('show');
+  document.querySelectorAll('.mood-card').forEach(c => c.style.opacity='1');
+  document.getElementById('moodOverlay').classList.add('show');
+}
+
+// =============================================
+// 4. LYRICS (search via lyrics.ovh free API)
+// =============================================
+async function openLyrics() {
+  document.getElementById('lyricsOverlay').classList.add('show');
+  if (currentIdx < 0) {
+    document.getElementById('lyricsBody').innerHTML = '<div class="lyrics-searching">Play a song first to see its lyrics 🎵</div>';
+    return;
+  }
+  const t = tracks[currentIdx];
+  document.getElementById('lyricsBody').innerHTML = '<div class="lyrics-searching"><span class="spin">🎵</span><br>Searching lyrics for<br><strong>' + esc(t.name) + '</strong></div>';
+  try {
+    const artist = encodeURIComponent(t.artist === 'Unknown' ? '' : t.artist);
+    const title  = encodeURIComponent(t.name);
+    const res = await fetch('https://api.lyrics.ovh/v1/' + artist + '/' + title);
+    if (!res.ok) throw new Error('not found');
+    const data = await res.json();
+    if (data.lyrics) {
+      document.getElementById('lyricsBody').innerHTML =
+        '<div class="lyrics-title">' + esc(t.name) + '</div>' +
+        '<div class="lyrics-artist">' + esc(t.artist) + '</div>' +
+        '<div class="lyrics-text">' + esc(data.lyrics) + '</div>';
+    } else throw new Error('no lyrics');
+  } catch(e) {
+    document.getElementById('lyricsBody').innerHTML =
+      '<div class="lyrics-searching">😔 Lyrics not found for this song.<br><br>' +
+      '<span style="font-size:.75rem;color:var(--dim)">Try renaming your file as:<br><strong style="color:var(--soft)">Artist - Song Title.mp3</strong><br>for better results</span></div>';
+  }
+}
+
+// =============================================
+// 5. STATS & INSIGHTS
+// =============================================
+async function openStats() {
+  document.getElementById('statsOverlay').classList.add('show');
+  const history = await dbGetAll('history');
+  const body = document.getElementById('statsBody');
+
+  // Count plays per track
+  const playCounts = {};
+  let totalMins = 0;
+  history.forEach(h => {
+    playCounts[h.name] = (playCounts[h.name] || 0) + 1;
+  });
+
+  // Estimate total listening time from track durations
+  history.forEach(h => {
+    const t = tracks.find(tr => tr.name === h.name);
+    if (t && t.duration) {
+      const parts = t.duration.split(':');
+      if (parts.length === 2) totalMins += parseInt(parts[0]) + parseInt(parts[1])/60;
+    }
+  });
+
+  // Top songs
+  const topSongs = Object.entries(playCounts)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 5);
+  const maxPlays = topSongs.length ? topSongs[0][1] : 1;
+
+  // Today's plays
+  const today = new Date().toDateString();
+  const todayPlays = history.filter(h => new Date(h.playedAt).toDateString() === today).length;
+
+  // Favourite artist
+  const artistCounts = {};
+  history.forEach(h => {
+    const t = tracks.find(tr => tr.name === h.name);
+    if (t && t.artist && t.artist !== 'Unknown') artistCounts[t.artist] = (artistCounts[t.artist]||0)+1;
+  });
+  const favArtist = Object.entries(artistCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  body.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">${history.length}</div><div class="stat-label">Total Plays</div></div>
+      <div class="stat-card"><div class="stat-num">${tracks.length}</div><div class="stat-label">Songs Saved</div></div>
+      <div class="stat-card"><div class="stat-num">${Math.round(totalMins)}</div><div class="stat-label">Mins Listened</div></div>
+      <div class="stat-card"><div class="stat-num">${todayPlays}</div><div class="stat-label">Played Today</div></div>
+    </div>
+    ${favArtist ? `<div style="padding:10px 14px;background:rgba(232,112,184,.08);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;font-size:.8rem;color:var(--soft)">🌟 Favourite artist: <strong style="color:var(--rose)">${esc(favArtist[0])}</strong> (${favArtist[1]} plays)</div>` : ''}
+    ${topSongs.length ? `
+    <div class="top-songs-title">🏆 Most Played Songs</div>
+    ${topSongs.map(([name, plays], i) => `
+      <div class="top-song-item">
+        <div class="top-song-rank">${['🥇','🥈','🥉','4','5'][i]}</div>
+        <div class="top-song-info">
+          <div class="top-song-name">${esc(name)}</div>
+          <div class="top-song-plays">${plays} play${plays!==1?'s':''}</div>
+          <div class="top-song-bar" style="width:${Math.round(plays/maxPlays*100)}%"></div>
+        </div>
+      </div>`).join('')}` : '<div style="color:var(--dim);text-align:center;padding:20px;font-size:.82rem">Play some songs to see your stats! 🎵</div>'}
+  `;
+}
+
+// =============================================
+// PANEL HELPERS
+// =============================================
+function openPanel(id) { document.getElementById(id).classList.add('show'); }
+function closePanel(id) { document.getElementById(id).classList.remove('show'); }
+function closePanelOverlay(e, id) { if (e.target === document.getElementById(id)) closePanel(id); }
+
+// Also update lyrics when song changes
+const _origLoadTrack = loadTrack;
+
+audio.volume = 0.8;
+</script>
+</body>
+</html>
